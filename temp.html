@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IIceeKing — Product Designer & Creative Developer</title>
+
+  <!-- Fonts: Cormorant Garamond (luxury display) + Syne (modern grotesque) + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #090909;
+      --surface:   #111111;
+      --border:    rgba(255,255,255,0.07);
+      --text:      #F0EDE6;
+      --muted:     rgba(240,237,230,0.36);
+      --accent:    #C8A96E;
+      --accent2:   #7C6A50;
+      --left-bg:   #F0EAD8;
+      --left-text: #0D0C0A;
+      --left-muted:#8A8570;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Syne', sans-serif;
+    }
+
+    body {
+      display: flex;
+      background: var(--bg);
+      color: var(--text);
+      cursor: none;
+    }
+
+    /* ── Custom cursor ── */
+    #cursor {
+      position: fixed;
+      width: 9px; height: 9px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.12s ease;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(200,169,110,0.45);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.25s, height 0.25s, border-color 0.25s;
+    }
+
+    /* ══════════════════════════════════════
+       LEFT PANEL
+    ══════════════════════════════════════ */
+    #left {
+      width: 46%;
+      min-width: 460px;
+      background: var(--left-bg);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 44px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Noise texture */
+    #left::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.032'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* Right border divider */
+    #left::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 8%; bottom: 8%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.09) 25%, rgba(0,0,0,0.09) 75%, transparent);
+    }
+
+    #left > * { position: relative; z-index: 1; }
+
+    /* Nav */
+    .left-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+    }
+
+    .logo-mark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--left-text);
+      letter-spacing: -0.01em;
+    }
+    .logo-mark em { font-style: italic; color: var(--accent2); }
+
+    .avail-pill {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(107,175,115,0.1);
+      border: 1px solid rgba(107,175,115,0.28);
+      border-radius: 999px;
+      padding: 5px 13px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #5a9e62;
+    }
+    .avail-pill .dot {
+      width: 6px; height: 6px;
+      background: #6BAF73;
+      border-radius: 50%;
+      animation: blink 2s infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.4; }
+    }
+
+    /* Profile + identity */
+    .profile-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 26px;
+    }
+
+    .img-frame {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .img-frame img {
+      width: 140px;
+      height: 175px;
+      object-fit: cover;
+      object-position: top center;
+      border-radius: 5px;
+      display: block;
+      filter: contrast(1.05) saturate(0.92);
+    }
+    .img-frame::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border: 1px solid rgba(200,169,110,0.55);
+      border-radius: 7px;
+      pointer-events: none;
+    }
+    .img-badge {
+      position: absolute;
+      bottom: -10px; right: -10px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 3px;
+    }
+
+    .name-col { padding-top: 6px; }
+    .eyebrow {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 0.93;
+      color: var(--left-text);
+      letter-spacing: -0.02em;
+    }
+    h1 em { font-style: italic; color: var(--accent2); }
+
+    .title-tag {
+      margin-top: 13px;
+      display: flex; align-items: center; gap: 9px;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--left-muted);
+    }
+    .title-tag::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(0,0,0,0.1);
+      max-width: 55px;
+    }
+
+    /* Bio */
+    .bio {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(13,12,10,0.68);
+      margin-bottom: 22px;
+      max-width: 375px;
+    }
+    .bio strong { font-weight: 600; color: var(--left-text); }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(0,0,0,0.07);
+      border-radius: 7px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+    .stat {
+      background: rgba(255,255,255,0.5);
+      padding: 14px 10px;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .stat:hover { background: rgba(255,255,255,0.82); }
+    .stat b {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--left-text);
+    }
+    .stat span {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--left-muted);
+      margin-top: 3px;
+      display: block;
+    }
+
+    /* Skills */
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 22px;
+    }
+    .chip {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: 1px solid rgba(0,0,0,0.13);
+      border-radius: 3px;
+      padding: 5px 11px;
+      color: var(--left-text);
+      background: rgba(255,255,255,0.38);
+      cursor: none;
+      transition: background 0.18s, border-color 0.18s, color 0.18s;
+    }
+    .chip:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* CTAs */
+    .cta-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    .btn-p {
+      flex: 1;
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 13px;
+      border-radius: 4px;
+      background: var(--left-text);
+      color: var(--left-bg);
+      transition: background 0.18s, transform 0.18s;
+    }
+    .btn-p:hover { background: #1a1a18; transform: translateY(-1px); }
+    .btn-s {
+      flex: 1;
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 13px;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--left-text);
+      border: 1.5px solid rgba(0,0,0,0.18);
+      transition: border-color 0.18s, color 0.18s, transform 0.18s;
+    }
+    .btn-s:hover { border-color: var(--accent2); color: var(--accent2); transform: translateY(-1px); }
+
+    /* Footer */
+    .left-foot {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .socials { display: flex; gap: 16px; }
+    .socials a {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--left-muted);
+      text-decoration: none;
+      transition: color 0.18s;
+    }
+    .socials a:hover { color: var(--left-text); }
+    .copy {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--left-muted);
+    }
+
+    /* Left animations */
+    .fl { opacity: 0; transform: translateX(-16px); animation: flIn 0.65s ease forwards; }
+    .fl.d1 { animation-delay: 0.04s; }
+    .fl.d2 { animation-delay: 0.12s; }
+    .fl.d3 { animation-delay: 0.22s; }
+    .fl.d4 { animation-delay: 0.32s; }
+    .fl.d5 { animation-delay: 0.42s; }
+    .fl.d6 { animation-delay: 0.52s; }
+    .fl.d7 { animation-delay: 0.62s; }
+    .fl.d8 { animation-delay: 0.72s; }
+    @keyframes flIn { to { opacity: 1; transform: translateX(0); } }
+
+    /* ══════════════════════════════════════
+       RIGHT PANEL
+    ══════════════════════════════════════ */
+    #right {
+      flex: 1;
+      background: var(--bg);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 44px 52px 40px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ambient glow orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(90px);
+    }
+    .orb1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(200,169,110,0.06) 0%, transparent 65%);
+      top: -120px; right: -120px;
+    }
+    .orb2 {
+      width: 340px; height: 340px;
+      background: radial-gradient(circle, rgba(124,106,80,0.055) 0%, transparent 70%);
+      bottom: 20px; left: 0;
+    }
+
+    /* Right nav */
+    .right-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      position: relative; z-index: 2;
+    }
+    .sec-label {
+      display: flex; align-items: center; gap: 11px;
+    }
+    .sec-label .bar {
+      width: 26px; height: 1px;
+      background: var(--accent);
+    }
+    .sec-label span {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .proj-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: var(--muted);
+    }
+    .proj-count strong { color: var(--accent); font-weight: 400; }
+
+    /* Right heading */
+    .right-head {
+      margin-bottom: 28px;
+      position: relative; z-index: 2;
+    }
+    .right-head h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .right-head h2 em { font-style: italic; color: var(--accent); }
+
+    /* ── Video Grid ── */
+    /*
+      Layout:
+      [ BIG FEATURED ] [ top-right   ]
+      [ BIG FEATURED ] [ mid-right   ]
+      [ bottom-left  ] [ bottom-right]
+    */
+    .vgrid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr 88px;
+      gap: 12px;
+      position: relative; z-index: 2;
+      min-height: 0;
+    }
+
+    .vcard {
+      position: relative;
+      border-radius: 7px;
+      overflow: hidden;
+      background: #131313;
+      border: 1px solid var(--border);
+      cursor: none;
+      transition: transform 0.38s cubic-bezier(0.23,1,0.32,1),
+                  box-shadow 0.38s cubic-bezier(0.23,1,0.32,1),
+                  border-color 0.3s;
+    }
+    .vcard:hover {
+      transform: translateY(-5px) scale(1.014);
+      box-shadow: 0 22px 55px rgba(0,0,0,0.75), 0 0 0 1px rgba(200,169,110,0.18);
+      border-color: rgba(200,169,110,0.22);
+      z-index: 10;
+    }
+
+    .vcard.span2 { grid-row: 1 / 3; }
+
+    .vcard video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.55s ease;
+    }
+    .vcard:hover video { transform: scale(1.06); }
+
+    /* Gradient overlay */
+    .vcard-ov {
+      position: absolute; inset: 0;
+      background: linear-gradient(155deg, transparent 42%, rgba(0,0,0,0.8) 100%);
+      pointer-events: none;
+    }
+
+    /* Hover play icon */
+    .play-icon {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.75);
+      width: 42px; height: 42px;
+      background: rgba(200,169,110,0.14);
+      border: 1px solid rgba(200,169,110,0.4);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      transition: opacity 0.28s, transform 0.28s;
+      pointer-events: none;
+    }
+    .play-icon svg { width: 14px; height: 14px; fill: var(--accent); margin-left: 2px; }
+    .vcard:hover .play-icon { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+    /* Card info */
+    .vcard-info {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 22px 16px 14px;
+    }
+    .vtag {
+      display: inline-block;
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      background: rgba(200,169,110,0.15);
+      border: 1px solid rgba(200,169,110,0.28);
+      color: var(--accent);
+      border-radius: 2px;
+      padding: 3px 8px;
+      margin-bottom: 6px;
+    }
+    .vtitle {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.01em;
+      margin-bottom: 2px;
+    }
+    .vsub {
+      font-size: 10px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* Bottom row cards: horizontal strip style */
+    .vcard.strip .vcard-info {
+      top: 0; bottom: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+    }
+    .vcard.strip .vtag  { margin-bottom: 0; }
+    .vcard.strip .vtitle { font-size: 11.5px; margin-bottom: 0; }
+
+    /* Right footer */
+    .right-foot {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative; z-index: 2;
+    }
+    .view-all {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      transition: gap 0.22s;
+    }
+    .view-all:hover { gap: 15px; }
+    .arrow-line {
+      width: 28px; height: 1px;
+      background: var(--accent);
+      position: relative;
+      transition: width 0.22s;
+    }
+    .view-all:hover .arrow-line { width: 40px; }
+    .arrow-line::after {
+      content: '';
+      position: absolute;
+      right: 0; top: -3px;
+      width: 6px; height: 6px;
+      border-right: 1px solid var(--accent);
+      border-top: 1px solid var(--accent);
+      transform: rotate(45deg);
+    }
+    .tech-row { display: flex; gap: 8px; align-items: center; }
+    .tbadge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 3px 8px;
+    }
+
+    /* Right entry animations */
+    .fr { opacity: 0; transform: translateY(18px); animation: frIn 0.6s ease forwards; }
+    .fr.d1 { animation-delay: 0.18s; }
+    .fr.d2 { animation-delay: 0.30s; }
+    .fr.d3 { animation-delay: 0.44s; }
+    @keyframes frIn { to { opacity: 1; transform: translateY(0); } }
+
+    ::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ══════════════════════════════
+       LEFT
+  ══════════════════════════════ -->
+  <section id="left">
+
+    <nav class="left-nav fl d1">
+      <div class="logo-mark">II<em>cee</em>King</div>
+      <div class="avail-pill"><span class="dot"></span>Open to work</div>
+    </nav>
+
+    <div class="profile-row fl d2">
+      <div class="img-frame">
+        <img src="iiceekiing.jpeg" alt="IIceeKing — Product Designer" />
+        <div class="img-badge">2025</div>
+      </div>
+      <div class="name-col">
+        <p class="eyebrow">Product Designer & Developer</p>
+        <h1>II<em>cee</em><br/>King</h1>
+        <p class="title-tag">Lagos, Nigeria</p>
+      </div>
+    </div>
+
+    <p class="bio fl d3">
+      I design and build <strong>world-class digital products</strong> — from pixel-perfect interfaces to performant front-ends. Obsessed with the intersection of <strong>aesthetics and function</strong>.
+    </p>
+
+    <div class="stats fl d4">
+      <div class="stat"><b>5+</b><span>Years</span></div>
+      <div class="stat"><b>40+</b><span>Projects</span></div>
+      <div class="stat"><b>98%</b><span>Satisfied</span></div>
+    </div>
+
+    <div class="skills fl d5">
+      <span class="chip">UI / UX</span>
+      <span class="chip">Figma</span>
+      <span class="chip">HTML & CSS</span>
+      <span class="chip">Tailwind</span>
+      <span class="chip">Prototyping</span>
+      <span class="chip">Design Systems</span>
+      <span class="chip">Motion</span>
+    </div>
+
+    <div class="cta-row fl d6">
+      <a href="mailto:hello@iiceekiing.com" class="btn-p">Hire Me</a>
+      <a href="#" class="btn-s">Download CV</a>
+    </div>
+
+    <div class="left-foot fl d8">
+      <div class="socials">
+        <a href="#">LinkedIn</a>
+        <a href="#">Twitter</a>
+        <a href="#">Behance</a>
+        <a href="#">GitHub</a>
+      </div>
+      <span class="copy">© 2025 IIceeKing</span>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════
+       RIGHT
+  ══════════════════════════════ -->
+  <section id="right">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+
+    <div class="right-nav fr d1">
+      <div class="sec-label"><span class="bar"></span><span>Selected Work</span></div>
+      <div class="proj-count"><strong>05</strong> / Projects</div>
+    </div>
+
+    <div class="right-head fr d2">
+      <h2>Recent <em>Demos</em></h2>
+    </div>
+
+    <div class="vgrid fr d3">
+
+      <!-- Featured: spans 2 rows -->
+      <div class="vcard span2">
+        <video autoplay muted loop playsinline>
+          <source src="demo-video1.mp4" type="video/mp4" />
+        </video>
+        <div class="vcard-ov"></div>
+        <div class="play-icon"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+        <div class="vcard-info">
+          <div class="vtag">UI Design</div>
+          <div class="vtitle">E-Commerce Platform</div>
+          <div class="vsub">Full product design · 2024</div>
+        </div>
+      </div>
+
+      <!-- Top right -->
+      <div class="vcard">
+        <video autoplay muted loop playsinline>
+          <source src="demo-video2.mp4" type="video/mp4" />
+        </video>
+        <div class="vcard-ov"></div>
+        <div class="play-icon"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+        <div class="vcard-info">
+          <div class="vtag">Mobile App</div>
+          <div class="vtitle">FinTech Dashboard</div>
+          <div class="vsub">iOS / Android · 2024</div>
+        </div>
+      </div>
+
+      <!-- Mid right -->
+      <div class="vcard">
+        <video autoplay muted loop playsinline>
+          <source src="demo-video3.mp4" type="video/mp4" />
+        </video>
+        <div class="vcard-ov"></div>
+        <div class="play-icon"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+        <div class="vcard-info">
+          <div class="vtag">Web App</div>
+          <div class="vtitle">SaaS Analytics</div>
+          <div class="vsub">React · Figma · 2025</div>
+        </div>
+      </div>
+
+      <!-- Bottom left strip -->
+      <div class="vcard strip">
+        <video autoplay muted loop playsinline>
+          <source src="demo-video1.mp4" type="video/mp4" />
+        </video>
+        <div class="vcard-ov"></div>
+        <div class="play-icon" style="width:30px;height:30px;"><svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:var(--accent)"><polygon points="5,3 19,12 5,21"/></svg></div>
+        <div class="vcard-info">
+          <div class="vtag">Branding</div>
+          <div class="vtitle">Brand Identity System</div>
+        </div>
+      </div>
+
+      <!-- Bottom right strip -->
+      <div class="vcard strip">
+        <video autoplay muted loop playsinline>
+          <source src="demo-video2.mp4" type="video/mp4" />
+        </video>
+        <div class="vcard-ov"></div>
+        <div class="play-icon" style="width:30px;height:30px;"><svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:var(--accent)"><polygon points="5,3 19,12 5,21"/></svg></div>
+        <div class="vcard-info">
+          <div class="vtag">Motion</div>
+          <div class="vtitle">Animation Library</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="right-foot">
+      <a href="#" class="view-all">
+        View all projects
+        <span class="arrow-line"></span>
+      </a>
+      <div class="tech-row">
+        <span class="tbadge">Figma</span>
+        <span class="tbadge">React</span>
+        <span class="tbadge">Tailwind</span>
+      </div>
+    </div>
+
+  </section>
+
+  <script>
+    const cur  = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx=0, my=0, rx=0, ry=0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cur.style.left = mx+'px';
+      cur.style.top  = my+'px';
+    });
+
+    (function tick(){
+      rx += (mx-rx)*0.11;
+      ry += (my-ry)*0.11;
+      ring.style.left = rx+'px';
+      ring.style.top  = ry+'px';
+      requestAnimationFrame(tick);
+    })();
+
+    document.querySelectorAll('a,button,.vcard,.chip,.stat,.btn-p,.btn-s').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{
+        cur.style.transform='translate(-50%,-50%) scale(2.2)';
+        ring.style.width='52px'; ring.style.height='52px';
+        ring.style.borderColor='rgba(200,169,110,0.75)';
+      });
+      el.addEventListener('mouseleave',()=>{
+        cur.style.transform='translate(-50%,-50%) scale(1)';
+        ring.style.width='36px'; ring.style.height='36px';
+        ring.style.borderColor='rgba(200,169,110,0.45)';
+      });
+    });
+  </script>
+
+</body>
+</html>
