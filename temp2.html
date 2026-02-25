@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IIceeKing — Product Designer & Creative Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --or:#F4622A;--re:#C0392B;--bl:#1A56DB;--bll:#3B82F6;
+      --wh:#FFFFFF;--bg:#0A0A0A;--sf:#131313;--sf2:#1A1A1A;
+      --bd:rgba(255,255,255,0.07);--tx:#F5F2EE;--mu:rgba(245,242,238,0.4);
+      --gr:linear-gradient(135deg,var(--or) 0%,var(--re) 100%);
+      --grb:linear-gradient(135deg,var(--bl) 0%,#0D40C6 100%);
+    }
+    html,body{height:100%;font-family:'Syne',sans-serif}
+    body{background:var(--bg);color:var(--tx);cursor:none;overflow:hidden}
+    #cur{position:fixed;width:9px;height:9px;background:var(--or);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .12s,background .2s}
+    #cur-r{position:fixed;width:34px;height:34px;border:1.5px solid rgba(244,98,42,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .22s,height .22s,border-color .22s}
+    #app{display:flex;height:100vh;overflow:hidden}
+
+    /* SIDEBAR */
+    #sb{width:256px;min-width:256px;background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;padding:32px 24px;position:relative;z-index:10;overflow:hidden}
+    #sb::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gr)}
+    #sb::after{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none}
+    #sb>*{position:relative;z-index:1}
+    .logo{margin-bottom:32px}
+    .logo-t{font-size:21px;font-weight:800;color:var(--wh);letter-spacing:-.03em;line-height:1}
+    .logo-t span{background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .logo-s{font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--mu);margin-top:2px}
+    .sb-av{width:64px;height:64px;border-radius:50%;overflow:hidden;border:2px solid var(--or);margin-bottom:12px;flex-shrink:0}
+    .sb-av img{width:100%;height:100%;object-fit:cover;object-position:top center}
+    .sb-nm{font-size:14px;font-weight:700;color:var(--wh);margin-bottom:2px}
+    .sb-rl{font-size:10px;color:var(--mu);font-weight:500;letter-spacing:.05em;margin-bottom:6px}
+    .avpill{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:999px;padding:4px 10px;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#4ade80;margin-bottom:28px}
+    .avpill .dot{width:5px;height:5px;background:#4ade80;border-radius:50%;animation:blink 2s infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    nav.sb-nav{flex:1;display:flex;flex-direction:column;gap:3px}
+    .ni{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:8px;cursor:none;transition:background .2s,color .2s;text-decoration:none;color:var(--mu);font-size:12.5px;font-weight:600;letter-spacing:.02em;border:1px solid transparent}
+    .ni:hover{background:rgba(255,255,255,.05);color:var(--tx)}
+    .ni.act{background:rgba(244,98,42,.12);color:var(--or);border-color:rgba(244,98,42,.2)}
+    .ni svg{width:17px;height:17px;flex-shrink:0;opacity:.75}
+    .ni.act svg{opacity:1}
+    .sb-soc{margin-top:auto;padding-top:22px;border-top:1px solid var(--bd)}
+    .soc-lbl{font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--mu);margin-bottom:11px}
+    .soc-row{display:flex;gap:8px}
+    .si{width:32px;height:32px;border-radius:6px;border:1px solid var(--bd);background:var(--sf2);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--mu);transition:background .2s,border-color .2s,color .2s,transform .2s;cursor:none}
+    .si:hover{background:var(--or);border-color:var(--or);color:#fff;transform:translateY(-2px)}
+    .si svg{width:14px;height:14px;fill:currentColor}
+
+    /* MAIN */
+    #main{flex:1;overflow:hidden;position:relative}
+    .page{position:absolute;inset:0;display:none;overflow-y:auto;overflow-x:hidden}
+    .page.active{display:block}
+    .page.entering{animation:pgIn .35s cubic-bezier(.23,1,.32,1) forwards}
+    @keyframes pgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    ::-webkit-scrollbar{width:3px}
+    ::-webkit-scrollbar-track{background:var(--sf)}
+    ::-webkit-scrollbar-thumb{background:rgba(244,98,42,.3);border-radius:2px}
+
+    /* HOME */
+    #pg-home{display:flex;height:100%}
+    .hl{width:50%;padding:48px 52px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--bd);position:relative;overflow:hidden}
+    .hl::before{content:'';position:absolute;top:-180px;left:-180px;width:460px;height:460px;background:radial-gradient(circle,rgba(244,98,42,.07) 0%,transparent 60%);pointer-events:none}
+    .h-eb{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+    .h-eb .ln{width:28px;height:2px;background:var(--gr);border-radius:1px}
+    .h-eb span{font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--or)}
+    .h-img{width:160px;height:200px;object-fit:cover;object-position:top center;border-radius:10px;margin-bottom:24px;border:1px solid rgba(244,98,42,.3);box-shadow:0 20px 60px rgba(0,0,0,.5);filter:contrast(1.05)}
+    .h-name{font-family:'Fraunces',serif;font-size:clamp(42px,3.8vw,60px);font-weight:900;line-height:.9;letter-spacing:-.03em;color:var(--wh);margin-bottom:14px}
+    .h-name .or{color:var(--or)}
+    .h-name .bl{color:var(--bll)}
+    .h-tag{font-size:14.5px;font-weight:400;color:var(--mu);line-height:1.65;max-width:400px;margin-bottom:28px}
+    .h-tag strong{color:var(--tx);font-weight:600}
+    .hstats{display:flex;gap:2px;background:var(--bd);border-radius:9px;overflow:hidden;margin-bottom:28px;border:1px solid var(--bd)}
+    .hst{flex:1;padding:14px 10px;background:var(--sf);text-align:center;transition:background .2s}
+    .hst:hover{background:var(--sf2)}
+    .hst b{display:block;font-family:'Fraunces',serif;font-size:25px;font-weight:700;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+    .hst span{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-top:3px;display:block}
+    .schips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px}
+    .sc{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:5px 12px;border-radius:4px;border:1px solid var(--bd);color:var(--mu);background:var(--sf2);cursor:none;transition:background .18s,border-color .18s,color .18s,transform .18s}
+    .sc:hover{background:var(--or);border-color:var(--or);color:#fff;transform:translateY(-1px)}
+    .sc.b:hover{background:var(--bl);border-color:var(--bl)}
+    .hcta{display:flex;gap:11px}
+    .bf{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 18px;background:var(--gr);color:#fff;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:7px;text-decoration:none;cursor:none;border:none;transition:opacity .2s,transform .2s,box-shadow .2s;box-shadow:0 8px 28px rgba(244,98,42,.28)}
+    .bf:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 12px 36px rgba(244,98,42,.42)}
+    .bi{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 18px;background:transparent;color:var(--tx);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:7px;text-decoration:none;cursor:none;border:1.5px solid var(--bd);transition:border-color .2s,color .2s,transform .2s}
+    .bi:hover{border-color:var(--bll);color:var(--bll);transform:translateY(-2px)}
+    .hr{flex:1;padding:32px 38px;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden}
+    .hr::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(26,86,219,.07) 0%,transparent 65%);pointer-events:none}
+    .vhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;position:relative;z-index:2}
+    .vsl{display:flex;align-items:center;gap:9px}
+    .vsl .bar{width:20px;height:2px;background:var(--bl);border-radius:1px}
+    .vsl span{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--mu)}
+    .vct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mu)}
+    .vct strong{color:var(--bll);font-weight:400}
+    .vgrid{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 76px;gap:10px;position:relative;z-index:2;min-height:0}
+    .vc{position:relative;border-radius:7px;overflow:hidden;background:var(--sf);border:1px solid var(--bd);cursor:none;transition:transform .38s cubic-bezier(.23,1,.32,1),box-shadow .38s cubic-bezier(.23,1,.32,1),border-color .3s}
+    .vc:hover{transform:translateY(-5px) scale(1.014);box-shadow:0 20px 50px rgba(0,0,0,.8),0 0 0 1px rgba(26,86,219,.25);border-color:rgba(26,86,219,.3);z-index:10}
+    .vc.sp2{grid-row:1/3}
+    .vc video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .55s ease}
+    .vc:hover video{transform:scale(1.06)}
+    .vc-ov{position:absolute;inset:0;background:linear-gradient(155deg,transparent 40%,rgba(0,0,0,.8) 100%);pointer-events:none}
+    .vcpl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.75);width:38px;height:38px;background:rgba(26,86,219,.18);border:1.5px solid rgba(26,86,219,.5);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);opacity:0;transition:opacity .28s,transform .28s;pointer-events:none}
+    .vcpl svg{width:12px;height:12px;fill:#60a5fa;margin-left:2px}
+    .vc:hover .vcpl{opacity:1;transform:translate(-50%,-50%) scale(1)}
+    .vci{position:absolute;bottom:0;left:0;right:0;padding:18px 14px 12px}
+    .vtag{display:inline-block;font-size:8px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;background:rgba(26,86,219,.18);border:1px solid rgba(26,86,219,.3);color:#60a5fa;border-radius:2px;padding:3px 7px;margin-bottom:5px}
+    .vtl{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px}
+    .vsb{font-size:9.5px;color:rgba(255,255,255,.38)}
+    .vc.st .vci{top:0;bottom:0;display:flex;align-items:center;gap:9px;padding:0 13px}
+    .vc.st .vtag{margin-bottom:0}
+    .vc.st .vtl{font-size:11px;margin-bottom:0}
+    .vfoot{margin-top:12px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2}
+    .va{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bll);text-decoration:none;cursor:none;transition:gap .2s}
+    .va:hover{gap:14px}
+    .va .al{width:24px;height:1px;background:var(--bll);position:relative;transition:width .2s}
+    .va:hover .al{width:36px}
+    .va .al::after{content:'';position:absolute;right:0;top:-3px;width:5px;height:5px;border-right:1px solid var(--bll);border-top:1px solid var(--bll);transform:rotate(45deg)}
+    .tech{display:flex;gap:6px}
+    .tb{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mu);border:1px solid var(--bd);border-radius:2px;padding:3px 7px}
+
+    /* ABOUT */
+    #pg-about{padding:48px 56px;overflow-y:auto;height:100%}
+    .phdr{display:flex;align-items:flex-end;gap:14px;margin-bottom:40px}
+    .phdr h2{font-family:'Fraunces',serif;font-size:44px;font-weight:900;letter-spacing:-.03em;color:var(--wh);line-height:1}
+    .phdr h2 span{color:var(--or)}
+    .phdr .hl2{flex:1;height:1px;background:linear-gradient(to right,var(--bd),transparent);margin-bottom:8px}
+    .ag{display:grid;grid-template-columns:260px 1fr;gap:48px;align-items:start}
+    .apc{position:sticky;top:0}
+    .aiw{position:relative;margin-bottom:22px}
+    .aiw img{width:100%;height:320px;object-fit:cover;object-position:top center;border-radius:9px;display:block;filter:contrast(1.04) saturate(.95)}
+    .aiw::before{content:'';position:absolute;inset:-3px;border-radius:11px;background:var(--gr);z-index:-1}
+    .aib{position:absolute;bottom:-12px;right:-12px;background:var(--bl);color:#fff;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border-radius:5px;box-shadow:0 8px 24px rgba(26,86,219,.4)}
+    .qfs{margin-top:24px;display:flex;flex-direction:column;gap:9px}
+    .qf{display:flex;align-items:center;gap:10px;padding:9px 13px;background:var(--sf);border:1px solid var(--bd);border-radius:7px}
+    .qfi{width:27px;height:27px;border-radius:6px;background:rgba(244,98,42,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .qfi svg{width:13px;height:13px;fill:var(--or)}
+    .qft{font-size:11.5px;color:var(--mu);font-weight:500}
+    .qft strong{color:var(--tx);font-weight:700}
+    .atc{padding-bottom:60px}
+    .aintr{font-family:'Fraunces',serif;font-size:19px;font-weight:300;line-height:1.65;color:var(--tx);margin-bottom:22px;border-left:3px solid var(--or);padding-left:18px}
+    .aintr strong{font-weight:700;color:var(--or)}
+    .abod{font-size:14.5px;font-weight:400;line-height:1.8;color:rgba(245,242,238,.65);margin-bottom:18px}
+    .abod strong{color:var(--tx);font-weight:600}
+    .ast{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--or);margin:32px 0 16px;display:flex;align-items:center;gap:10px}
+    .ast::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(244,98,42,.3),transparent)}
+    .tl{display:flex;flex-direction:column}
+    .ti{display:grid;grid-template-columns:130px 1fr;gap:0 22px;padding:16px 0;border-bottom:1px solid var(--bd)}
+    .ti:last-child{border-bottom:none}
+    .ty{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--mu);padding-top:2px}
+    .tr{font-size:13.5px;font-weight:700;color:var(--wh);margin-bottom:2px}
+    .tc{font-size:11.5px;color:var(--or);font-weight:600;margin-bottom:5px}
+    .td{font-size:12px;color:var(--mu);line-height:1.6}
+    .skg{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:4px}
+    .ski{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:14px 15px;transition:border-color .2s}
+    .ski:hover{border-color:rgba(244,98,42,.3)}
+    .skn{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
+    .skn span{font-size:9.5px;color:var(--or);font-family:'JetBrains Mono',monospace}
+    .skbar{height:3px;background:var(--sf2);border-radius:2px;overflow:hidden}
+    .skf{height:100%;background:var(--gr);border-radius:2px}
+
+    /* SKILLS PAGE */
+    #pg-skills{padding:48px 56px;overflow-y:auto;height:100%}
+    .si-intro{max-width:600px;margin-bottom:42px}
+    .si-intro p{font-size:14.5px;color:var(--mu);line-height:1.7}
+    .sksec{margin-bottom:36px}
+    .sst{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--bll);margin-bottom:15px;display:flex;align-items:center;gap:10px}
+    .sst.red{color:var(--or)}
+    .sst::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(59,130,246,.25),transparent)}
+    .sst.red::after{background:linear-gradient(to right,rgba(244,98,42,.25),transparent)}
+    .ssgr{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .ssc{background:var(--sf);border:1px solid var(--bd);border-radius:9px;padding:16px;transition:border-color .2s,transform .2s}
+    .ssc:hover{border-color:rgba(244,98,42,.3);transform:translateY(-2px)}
+    .ssc-top{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+    .ssic{width:32px;height:32px;border-radius:7px;background:rgba(244,98,42,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .ssic.b{background:rgba(26,86,219,.12)}
+    .ssic svg{width:15px;height:15px;fill:var(--or)}
+    .ssic.b svg{fill:#60a5fa}
+    .ssc-nm{font-size:12.5px;font-weight:700;color:var(--wh)}
+    .ssbar{height:3px;background:var(--sf2);border-radius:2px;overflow:hidden}
+    .ssfill{height:100%;border-radius:2px;background:var(--gr)}
+    .ssfill.b{background:var(--grb)}
+    .sspct{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--mu);text-align:right;margin-top:3px}
+
+    /* CONTACT */
+    #pg-contact{display:grid;grid-template-columns:1fr 1fr;height:100%}
+    .cl{padding:56px 52px;border-right:1px solid var(--bd);display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+    .cl::before{content:'';position:absolute;bottom:-150px;left:-150px;width:400px;height:400px;background:radial-gradient(circle,rgba(244,98,42,.08) 0%,transparent 65%);pointer-events:none}
+    .ctag{display:inline-flex;align-items:center;gap:8px;background:rgba(244,98,42,.1);border:1px solid rgba(244,98,42,.25);border-radius:999px;padding:6px 14px;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--or);margin-bottom:22px}
+    .ch2{font-family:'Fraunces',serif;font-size:44px;font-weight:900;letter-spacing:-.03em;color:var(--wh);line-height:1;margin-bottom:18px}
+    .ch2 span{color:var(--or)}
+    .csub{font-size:14.5px;color:var(--mu);line-height:1.65;margin-bottom:36px;max-width:370px}
+    .csub strong{color:var(--tx);font-weight:600}
+    .ccds{display:flex;flex-direction:column;gap:11px;margin-bottom:36px}
+    .ccd{display:flex;align-items:center;gap:13px;padding:14px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:9px;transition:border-color .2s}
+    .ccd:hover{border-color:rgba(244,98,42,.3)}
+    .ccdi{width:34px;height:34px;border-radius:8px;background:rgba(244,98,42,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .ccdi svg{width:15px;height:15px;fill:var(--or)}
+    .ccdl{font-size:9.5px;color:var(--mu);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+    .ccdv{font-size:13px;color:var(--tx);font-weight:600}
+    .csl{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--mu);margin-bottom:11px}
+    .csocs{display:flex;gap:9px}
+    .csoc{width:42px;height:42px;border-radius:9px;border:1px solid var(--bd);background:var(--sf);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--mu);cursor:none;transition:background .2s,border-color .2s,color .2s,transform .2s}
+    .csoc:hover{background:var(--or);border-color:var(--or);color:#fff;transform:translateY(-2px)}
+    .csoc.bl:hover{background:var(--bl);border-color:var(--bl)}
+    .csoc svg{width:17px;height:17px;fill:currentColor}
+    .cr{padding:56px 52px;display:flex;flex-direction:column;justify-content:center;background:var(--sf);position:relative;overflow:hidden}
+    .cr::before{content:'';position:absolute;top:-100px;right:-100px;width:350px;height:350px;background:radial-gradient(circle,rgba(26,86,219,.07) 0%,transparent 65%);pointer-events:none}
+    .ft{font-size:25px;font-weight:800;color:var(--wh);margin-bottom:5px}
+    .fs{font-size:13px;color:var(--mu);margin-bottom:28px}
+    .fg{margin-bottom:16px}
+    .fg label{display:block;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:6px}
+    .fg input,.fg textarea{width:100%;background:var(--sf2);border:1.5px solid var(--bd);border-radius:7px;padding:12px 15px;color:var(--tx);font-family:inherit;font-size:13px;font-weight:500;outline:none;transition:border-color .2s,box-shadow .2s;cursor:none}
+    .fg input::placeholder,.fg textarea::placeholder{color:rgba(245,242,238,.2)}
+    .fg input:focus,.fg textarea:focus{border-color:var(--or);box-shadow:0 0 0 3px rgba(244,98,42,.12)}
+    .fg textarea{min-height:110px;resize:vertical}
+    .frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .fsub{width:100%;padding:14px;background:var(--gr);color:#fff;font-family:inherit;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;border:none;border-radius:8px;cursor:none;transition:opacity .2s,transform .2s,box-shadow .2s;box-shadow:0 8px 28px rgba(244,98,42,.28);display:flex;align-items:center;justify-content:center;gap:9px}
+    .fsub:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 12px 36px rgba(244,98,42,.42)}
+    .fsub svg{width:15px;height:15px;fill:#fff}
+    .succ{display:none;text-align:center;padding:28px}
+    .succ.show{display:block}
+    .si2{font-size:44px;margin-bottom:14px}
+    .st2{font-size:22px;font-weight:800;color:var(--wh);margin-bottom:7px}
+    .ss2{font-size:13.5px;color:var(--mu)}
+
+    /* Animations */
+    .fl{opacity:0;transform:translateX(-14px);animation:flI .6s ease forwards}
+    .fl.d1{animation-delay:.04s}.fl.d2{animation-delay:.12s}.fl.d3{animation-delay:.2s}
+    .fl.d4{animation-delay:.28s}.fl.d5{animation-delay:.36s}.fl.d6{animation-delay:.44s}
+    .fl.d7{animation-delay:.52s}.fl.d8{animation-delay:.6s}
+    @keyframes flI{to{opacity:1;transform:translateX(0)}}
+    .fu{opacity:0;transform:translateY(14px);animation:fuI .55s ease forwards}
+    .fu.d1{animation-delay:.05s}.fu.d2{animation-delay:.14s}.fu.d3{animation-delay:.23s}
+    .fu.d4{animation-delay:.32s}.fu.d5{animation-delay:.41s}.fu.d6{animation-delay:.5s}
+    @keyframes fuI{to{opacity:1;transform:translateY(0)}}
+  </style>
+</head>
+<body>
+  <div id="cur"></div>
+  <div id="cur-r"></div>
+  <div id="app">
+
+    <!-- SIDEBAR -->
+    <aside id="sb">
+      <div class="logo">
+        <div class="logo-t">II<span>cee</span>King</div>
+        <div class="logo-s">Portfolio 2025</div>
+      </div>
+      <div class="sb-av"><img src="iiceekiing.jpeg" alt="IIceeKing"/></div>
+      <div class="sb-nm">IIceeKing</div>
+      <div class="sb-rl">Product Designer & Developer</div>
+      <div class="avpill"><span class="dot"></span>Open to Work</div>
+      <nav class="sb-nav">
+        <a class="ni act" onclick="showPage('home')" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
+        </a>
+        <a class="ni" onclick="showPage('about')" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>About Me
+        </a>
+        <a class="ni" onclick="showPage('skills')" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Skills
+        </a>
+        <a class="ni" onclick="showPage('contact')" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Contact / DM
+        </a>
+      </nav>
+      <div class="sb-soc">
+        <div class="soc-lbl">Find Me Online</div>
+        <div class="soc-row">
+          <a class="si" href="https://github.com/" target="_blank" title="GitHub"><svg viewBox="0 0 24 24"><path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2 0-.4-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.4 11.4 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.7.1 3 .7.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0012 .3"/></svg></a>
+          <a class="si" href="https://x.com/" target="_blank" title="X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+          <a class="si" href="https://linkedin.com/" target="_blank" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
+          <a class="si" href="https://instagram.com/" target="_blank" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path fill="var(--bg)" d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="var(--bg)" stroke-width="2" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+    </aside>
+
+    <main id="main">
+
+      <!-- HOME PAGE -->
+      <div class="page active" id="pg-home">
+        <div style="display:flex;height:100%">
+          <div class="hl">
+            <div class="h-eb fl d1"><span class="ln"></span><span>Product Designer & Developer</span></div>
+            <img src="iiceekiing.jpeg" alt="IIceeKing" class="h-img fl d2"/>
+            <h1 class="h-name fl d3">II<span class="or">cee</span><br/><span class="bl">King</span></h1>
+            <p class="h-tag fl d4">I craft <strong>world-class digital products</strong> — pixel-perfect UI meets powerful front-end engineering. Based in <strong>Lagos, Nigeria</strong>. Working globally.</p>
+            <div class="hstats fl d5">
+              <div class="hst"><b>5+</b><span>Years</span></div>
+              <div class="hst"><b>40+</b><span>Projects</span></div>
+              <div class="hst"><b>98%</b><span>Satisfied</span></div>
+              <div class="hst"><b>12+</b><span>Clients</span></div>
+            </div>
+            <div class="schips fl d6">
+              <span class="sc">UI/UX</span><span class="sc">Figma</span><span class="sc b">HTML & CSS</span><span class="sc b">Tailwind</span><span class="sc">Prototyping</span><span class="sc b">Design Systems</span><span class="sc">Motion</span>
+            </div>
+            <div class="hcta fl d7">
+              <a href="#" onclick="showPage('contact')" class="bf"><svg style="width:13px;height:13px;fill:#fff" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Hire Me / DM</a>
+              <a href="#" onclick="showPage('about')" class="bi"><svg style="width:13px;height:13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>About Me</a>
+            </div>
+          </div>
+          <div class="hr">
+            <div class="vhdr">
+              <div class="vsl"><span class="bar"></span><span>Selected Work</span></div>
+              <div class="vct"><strong>05</strong> / Projects</div>
+            </div>
+            <div class="vgrid">
+              <div class="vc sp2">
+                <video autoplay muted loop playsinline><source src="demo-video1.mp4" type="video/mp4"/></video>
+                <div class="vc-ov"></div><div class="vcpl"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+                <div class="vci"><div class="vtag">UI Design</div><div class="vtl">E-Commerce Platform</div><div class="vsb">Full product design · 2024</div></div>
+              </div>
+              <div class="vc">
+                <video autoplay muted loop playsinline><source src="demo-video2.mp4" type="video/mp4"/></video>
+                <div class="vc-ov"></div><div class="vcpl"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+                <div class="vci"><div class="vtag">Mobile App</div><div class="vtl">FinTech Dashboard</div><div class="vsb">iOS / Android · 2024</div></div>
+              </div>
+              <div class="vc">
+                <video autoplay muted loop playsinline><source src="demo-video3.mp4" type="video/mp4"/></video>
+                <div class="vc-ov"></div><div class="vcpl"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+                <div class="vci"><div class="vtag">Web App</div><div class="vtl">SaaS Analytics</div><div class="vsb">React · Figma · 2025</div></div>
+              </div>
+              <div class="vc st">
+                <video autoplay muted loop playsinline><source src="demo-video1.mp4" type="video/mp4"/></video>
+                <div class="vc-ov"></div>
+                <div class="vci"><div class="vtag">Branding</div><div class="vtl">Brand Identity System</div></div>
+              </div>
+              <div class="vc st">
+                <video autoplay muted loop playsinline><source src="demo-video2.mp4" type="video/mp4"/></video>
+                <div class="vc-ov"></div>
+                <div class="vci"><div class="vtag">Motion</div><div class="vtl">Animation Library</div></div>
+              </div>
+            </div>
+            <div class="vfoot">
+              <a href="#" class="va">View all projects <span class="al"></span></a>
+              <div class="tech"><span class="tb">Figma</span><span class="tb">React</span><span class="tb">Tailwind</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABOUT PAGE -->
+      <div class="page" id="pg-about">
+        <div class="phdr fu d1"><h2>About <span>Me</span></h2><div class="hl2"></div></div>
+        <div class="ag">
+          <div class="apc fu d2">
+            <div class="aiw">
+              <img src="iiceekiing.jpeg" alt="IIceeKing"/>
+              <div class="aib">Lagos 🇳🇬</div>
+            </div>
+            <div class="qfs fu d3">
+              <div class="qf"><div class="qfi"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div><div class="qft"><strong>Lagos, Nigeria</strong> — Remote-Ready</div></div>
+              <div class="qf"><div class="qfi"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm.5-5H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg></div><div class="qft"><strong>5+ Years</strong> Experience</div></div>
+              <div class="qf"><div class="qfi"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.34C18 2.54 15.46 1 13.5 1c-1.28 0-2.44.6-3.2 1.5L9 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg></div><div class="qft"><strong>40+ Projects</strong> Delivered</div></div>
+              <div class="qf"><div class="qfi"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><div class="qft"><strong>98%</strong> Client Satisfaction</div></div>
+            </div>
+          </div>
+          <div class="atc fu d2">
+            <p class="aintr">I'm <strong>IIceeKing</strong> — a Product Designer and Creative Developer who believes that truly great software isn't just functional, it's <strong>beautiful, intuitive, and unforgettable</strong>.</p>
+            <p class="abod">My journey into design and development started over five years ago right here in Lagos, Nigeria — where I taught myself to code and design out of pure curiosity and a burning desire to build things that actually matter. What began as late nights watching YouTube tutorials and reverse-engineering websites I admired turned into a full-blown career crafting digital experiences for startups, agencies, and international clients.</p>
+            <p class="abod">I specialise at the intersection of <strong>design and engineering</strong> — a rare space where visual precision meets technical execution. I speak both languages fluently: I can articulate a complete design vision in Figma in the morning, and ship the responsive, pixel-perfect front-end by evening. This dual fluency means clients get faster iteration cycles, fewer handoff gaps, and products that actually look and feel the way they were designed to.</p>
+            <p class="abod">My work has spanned <strong>e-commerce platforms, fintech dashboards, SaaS applications, mobile apps, brand identity systems</strong>, and interactive prototypes. Whether I'm designing a checkout flow that converts, engineering a design system from scratch, or crafting micro-interactions that delight users — I bring the same obsessive attention to detail and the same relentless commitment to quality.</p>
+            <p class="abod">Outside client work, I'm constantly exploring the cutting edge: generative UI, motion design, AI-integrated product experiences, and what the next generation of digital interfaces will look and feel like. I believe the best designers today are also builders — and I'm proudly both.</p>
+            <p class="abod">When I'm not at my desk, I'm mentoring upcoming designers in the Lagos tech community, dissecting Formula 1 strategy, or finding new music. I bring that same energy — <strong>precision, speed, and style</strong> — to everything I create.</p>
+            <div class="ast">Experience</div>
+            <div class="tl">
+              <div class="ti"><div class="ty">2023 — Present</div><div><div class="tr">Senior Product Designer & Developer</div><div class="tc">Freelance / Independent Studio</div><div class="td">Leading end-to-end product design for international clients. UX strategy, UI design, front-end development, and design system architecture.</div></div></div>
+              <div class="ti"><div class="ty">2021 — 2023</div><div><div class="tr">UI/UX Designer</div><div class="tc">TechBridge Africa · Lagos</div><div class="td">Designed mobile-first products for fintech and e-commerce clients. Introduced a shared design system adopted company-wide by a 12-person engineering team.</div></div></div>
+              <div class="ti"><div class="ty">2019 — 2021</div><div><div class="tr">Junior Designer & Front-End Dev</div><div class="tc">CreativeHub Studios · Remote</div><div class="td">Built responsive websites and brand identities for early-stage startups. Honed skills in HTML, CSS, JavaScript, and Figma-to-code workflows.</div></div></div>
+            </div>
+            <div class="ast">Core Skills</div>
+            <div class="skg">
+              <div class="ski"><div class="skn">UI/UX Design <span>95%</span></div><div class="skbar"><div class="skf" style="width:95%"></div></div></div>
+              <div class="ski"><div class="skn">Figma <span>98%</span></div><div class="skbar"><div class="skf" style="width:98%"></div></div></div>
+              <div class="ski"><div class="skn">HTML & CSS <span>93%</span></div><div class="skbar"><div class="skf" style="width:93%"></div></div></div>
+              <div class="ski"><div class="skn">Tailwind CSS <span>91%</span></div><div class="skbar"><div class="skf" style="width:91%"></div></div></div>
+              <div class="ski"><div class="skn">Prototyping <span>96%</span></div><div class="skbar"><div class="skf" style="width:96%"></div></div></div>
+              <div class="ski"><div class="skn">Design Systems <span>88%</span></div><div class="skbar"><div class="skf" style="width:88%"></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SKILLS PAGE -->
+      <div class="page" id="pg-skills">
+        <div class="phdr fu d1"><h2>My <span>Skills</span></h2><div class="hl2"></div></div>
+        <div class="si-intro fu d2"><p>Five years of hands-on experience across the full product design and front-end development stack. I master tools that ship — not just ones that look good in a portfolio.</p></div>
+        <div class="sksec fu d3">
+          <div class="sst red">Design & UX</div>
+          <div class="ssgr">
+            <div class="ssc"><div class="ssc-top"><div class="ssic"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div class="ssc-nm">UI / UX Design</div></div><div class="ssbar"><div class="ssfill" style="width:95%"></div></div><div class="sspct">95%</div></div>
+            <div class="ssc"><div class="ssc-top"><div class="ssic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg></div><div class="ssc-nm">Figma</div></div><div class="ssbar"><div class="ssfill" style="width:98%"></div></div><div class="sspct">98%</div></div>
+            <div class="ssc"><div class="ssc-top"><div class="ssic"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div><div class="ssc-nm">Motion Design</div></div><div class="ssbar"><div class="ssfill" style="width:82%"></div></div><div class="sspct">82%</div></div>
+            <div class="ssc"><div class="ssc-top"><div class="ssic"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div><div class="ssc-nm">Prototyping</div></div><div class="ssbar"><div class="ssfill" style="width:96%"></div></div><div class="sspct">96%</div></div>
+            <div class="ssc"><div class="ssc-top"><div class="ssic"><svg viewBox="0 0 24 24"><path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 18l-6.1 3 1.2-6.8L2 9.3l6.9-1z"/></svg></div><div class="ssc-nm">Brand Identity</div></div><div class="ssbar"><div class="ssfill" style="width:86%"></div></div><div class="sspct">86%</div></div>
+            <div class="ssc"><div class="ssc-top"><div class="ssic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg></div><div class="ssc-nm">Design Systems</div></div><div class="ssbar"><div class="ssfill" style="width:88%"></div></div><div class="sspct">88%</div></div>
+          </div>
+        </div>
+        <div class="sksec fu d4">
+          <div class="sst">Development</div>
+          <div class="ssgr">
+            <div class="ssc"><div class="ssc-top"><div class="ssic b"><svg viewBox="0 0 24 24"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg></div><div class="ssc-nm">HTML & CSS</div></div><div class="ssbar"><div class="ssfill b" style="width:93%"></div></div><div class="sspct">93%</div></div>
+            <div class="ssc"><div class="ssc-top"><div class="ssic b"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg></div><div class="ssc-nm">Tailwind CSS</div></div><div class="ssbar"><div class="ssfill b" style="width:91%"></div></div><div class="sspct">91%</div></div>
+            <div class="ssc"><div class="ssc-top"><div class="ssic b"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="ssc-nm">JavaScript</div></div><div class="ssbar"><div class="ssfill b" style="width:78%"></div></div><div class="sspct">78%</div></div>
+            <div class="ssc"><div class="ssc-top"><div class="ssic b"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg></div><div class="ssc-nm">Responsive Design</div></div><div class="ssbar"><div class="ssfill b" style="width:95%"></div></div><div class="sspct">95%</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTACT PAGE -->
+      <div class="page" id="pg-contact">
+        <div style="display:grid;grid-template-columns:1fr 1fr;height:100%">
+          <div class="cl">
+            <div class="ctag fu d1"><svg style="width:12px;height:12px;fill:var(--or)" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Direct Message</div>
+            <h2 class="ch2 fu d2">Let's <span>Work</span><br/>Together</h2>
+            <p class="csub fu d3">Have a project in mind? Need a designer or developer? I'm <strong>actively available</strong> for freelance, contract, and full-time roles. I reply within 24 hours — always.</p>
+            <div class="ccds fu d4">
+              <div class="ccd"><div class="ccdi"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><div class="ccdl">Email</div><div class="ccdv">hello@iiceekiing.com</div></div></div>
+              <div class="ccd"><div class="ccdi"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="var(--bg)"/></svg></div><div><div class="ccdl">Location</div><div class="ccdv">Lagos, Nigeria 🇳🇬</div></div></div>
+              <div class="ccd"><div class="ccdi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div><div><div class="ccdl">Response Time</div><div class="ccdv">Within 24 Hours</div></div></div>
+            </div>
+            <div class="fu d5">
+              <div class="csl">Connect on Socials</div>
+              <div class="csocs">
+                <a class="csoc" href="https://github.com/" target="_blank" title="GitHub"><svg viewBox="0 0 24 24"><path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2 0-.4-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.4 11.4 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.7.1 3 .7.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0012 .3"/></svg></a>
+                <a class="csoc bl" href="https://x.com/" target="_blank" title="X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                <a class="csoc bl" href="https://linkedin.com/" target="_blank" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a class="csoc" href="https://instagram.com/" target="_blank" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path fill="var(--bg)" d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="var(--bg)" stroke-width="2" stroke-linecap="round"/></svg></a>
+              </div>
+            </div>
+          </div>
+          <div class="cr">
+            <div id="fw">
+              <h3 class="ft fu d1">Send a Message</h3>
+              <p class="fs fu d2">I read every message personally — no bots, no auto-replies.</p>
+              <div class="fu d3">
+                <div class="frow">
+                  <div class="fg"><label>Your Name</label><input type="text" id="fn" placeholder="John Doe"/></div>
+                  <div class="fg"><label>Email Address</label><input type="email" id="fe" placeholder="john@company.com"/></div>
+                </div>
+                <div class="fg"><label>Company (Optional)</label><input type="text" id="fc" placeholder="Your company name"/></div>
+                <div class="fg"><label>Subject</label><input type="text" id="fsu" placeholder="What's this about?"/></div>
+                <div class="fg"><label>Your Message</label><textarea id="fm" placeholder="Tell me about your project, timeline, budget — or just say hello. I'm all ears…"></textarea></div>
+                <button class="fsub" onclick="sendDM()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send Message</button>
+              </div>
+            </div>
+            <div class="succ" id="succ">
+              <div class="si2">🎉</div>
+              <div class="st2">Message Sent!</div>
+              <div class="ss2">Thanks for reaching out. I'll be in touch within 24 hours.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Cursor
+    const cur=document.getElementById('cur'),cr=document.getElementById('cur-r');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+    (function t(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(t)})();
+    document.querySelectorAll('a,button,.vc,.sc,.hst,.ni,.si,.csoc,.ccd,.ssc,.ski,.bf,.bi,.fsub').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2.2)';cr.style.width='50px';cr.style.height='50px';cr.style.borderColor='rgba(244,98,42,.8)'});
+      el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';cr.style.width='34px';cr.style.height='34px';cr.style.borderColor='rgba(244,98,42,.5)'});
+    });
+
+    // Page navigation
+    function showPage(id){
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active','entering'));
+      const t=document.getElementById('pg-'+id);
+      t.classList.add('active','entering');
+      t.scrollTop=0;
+      const m={home:0,about:1,skills:2,contact:3};
+      document.querySelectorAll('.ni').forEach((n,i)=>n.classList.toggle('act',i===m[id]));
+    }
+
+    // DM send
+    function sendDM(){
+      const n=document.getElementById('fn').value.trim();
+      const e=document.getElementById('fe').value.trim();
+      const msg=document.getElementById('fm').value.trim();
+      if(!n||!e||!msg){
+        ['fn','fe','fm'].forEach(id=>{
+          const el=document.getElementById(id);
+          if(!el.value.trim()){el.style.borderColor='var(--re)';el.style.boxShadow='0 0 0 3px rgba(192,57,43,.15)';setTimeout(()=>{el.style.borderColor='';el.style.boxShadow=''},1800)}
+        });return;
+      }
+      const body=`Name: ${n}\nEmail: ${e}\nCompany: ${document.getElementById('fc').value}\n\n${msg}`;
+      window.location.href=`mailto:hello@iiceekiing.com?subject=${encodeURIComponent(document.getElementById('fsu').value||'Portfolio Inquiry — '+n)}&body=${encodeURIComponent(body)}`;
+      const fw=document.getElementById('fw');fw.style.opacity='0';fw.style.transform='translateY(8px)';
+      setTimeout(()=>{fw.style.display='none';const s=document.getElementById('succ');s.classList.add('show')},300);
+    }
+    document.getElementById('fm').addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='Enter')sendDM()});
+  </script>
+</body>
+</html>
